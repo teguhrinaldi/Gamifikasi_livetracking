@@ -1,0 +1,159 @@
+.login-container {
+	background-image: url('../asseets/bg6.jpeg');
+	background-size: cover;
+	background-repeat: no-repeat;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+}
+
+.login-box {
+	background-color: rgba(1, 1, 1, 0.8);
+	border-radius: 40px;
+	padding: 5%;
+	text-align: center;
+	max-width: 600px;
+	margin: auto;
+	width: 80%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.login-title {
+	font-size: 50px;
+	margin-bottom: 20px;
+	color: #5ba4e8;
+}
+
+.input-group {
+	margin-bottom: 15px;
+	color: #5ba4e8;
+	text-align: left;
+	width: 290px;
+	position: relative;
+	margin-right: 25px;
+}
+
+.input-label {
+	display: block;
+	margin-bottom: 5px;
+	font-weight: bold;
+}
+
+.icon-input {
+	position: relative;
+}
+
+.input-icon {
+	position: absolute;
+	top: 50%;
+	left: 8px;
+	transform: translateY(-50%);
+	color: black;
+}
+
+.input-group input {
+	width: calc(100% - 24px);
+	padding: 8px;
+	border-radius: 8px;
+	background-color: rgba(255, 255, 255, 40%);
+	color: #ffff;
+	padding-left: 24px;
+	padding-right: 24px;
+}
+
+.eye-icon {
+	position: absolute;
+	top: 50%;
+	right: 8px;
+	transform: translateY(-50%);
+	color: #5ba4e8;
+	cursor: pointer;
+}
+
+.button-group {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	margin-top: 20px;
+}
+.google-login {
+	margin-top: 15px;
+}
+
+.google-login-button {
+	background-color: rgba(1, 1, 1, 0.1);
+	color: #7c838a;
+	width: 130px;
+	height: 50px;
+	cursor: pointer;
+	border-radius: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid #7c838a;
+	margin-right: 157px;
+	text-align: left;
+}
+.login-button,
+.register-button {
+	background-color: #5ba4e8;
+	color: #fff;
+	width: 120px;
+	height: 40px;
+	cursor: pointer;
+	border-radius: 10px;
+	margin-left: 8px;
+}
+
+.login-button {
+	margin-right: 30px;
+}
+
+.register-button {
+	margin-left: 30px;
+}
+
+.login-button:hover,
+.register-button:hover {
+	background-color: #4488d6;
+}
+
+@media (max-width: 767px) {
+	.login-box {
+		width: 80%;
+	}
+
+	.login-title {
+		font-size: 36px;
+	}
+
+	.button-group {
+		flex-direction: column;
+		margin-top: 15px;
+	}
+
+	.login-button,
+	.register-button {
+		margin-left: 0;
+		margin-right: 0;
+	}
+
+	.register-button {
+		margin-top: 10px;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+	.login-box {
+		width: 90%;
+	}
+}
+
+@media (min-width: 1024px) {
+	.login-box {
+		width: 70%;
+	}
+}

@@ -1,0 +1,24 @@
+/* src/components/UserDropdown.css */
+.user-dropdown {
+	position: absolute;
+	top: 40px;
+	right: 0;
+	background-color: #fff;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	z-index: 1;
+}
+
+ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+li {
+	padding: 10px;
+	cursor: pointer;
+}
+
+li:hover {
+	background-color: #f0f0f0;
+}
