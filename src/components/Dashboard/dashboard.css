@@ -1,6 +1,6 @@
 .dashboard-container {
 	position: relative;
-	background-image: url('../asseets/BG5.jpeg');
+	background-image: url('../assets/BG5.jpeg');
 	background-size: cover;
 	background-repeat: no-repeat;
 	display: flex;
@@ -9,34 +9,58 @@
 	height: 100vh;
 }
 
-.dashboard-leaderboard {
+.dashboard-username-container {
 	position: absolute;
 	top: 10px;
 	right: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end; /* Perubahan ini untuk memindahkan ke ujung kanan */
+}
+
+.dashboard-username-btn {
+	background-color: #5ba4e8;
+	border: none;
+	color: #fff;
+	font-size: 18px;
 	cursor: pointer;
 	display: flex;
 	align-items: center;
-	background-color: #5ba4e8;
+	padding: 10px;
 	border-radius: 5px;
-	padding: 5px;
 }
 
-.dashboard-leaderboard-icon {
-	color: #fff;
+.dashboard-username-btn:focus {
+	outline: none;
 }
 
-.dashboard-leaderboard-text {
+.dashboard-username-btn:hover {
+	text-decoration: underline;
+	background-color: #407bbf;
+}
+
+.dropdown-icon {
+	font-size: 16px;
 	margin-left: 5px;
 	color: #fff;
 }
 
 .dashboard-leaderboard-dropdown {
 	position: absolute;
-	top: 40px;
+	top: 35px;
 	right: 0;
 	background-color: #5ba4e8;
 	border-radius: 5px;
 	padding: 10px;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+}
+
+.dashboard-leaderboard-dropdown span {
+	cursor: pointer;
+	margin-bottom: 5px;
+	color: #fff;
 }
 
 .dashboard-box {
@@ -52,10 +76,11 @@
 	align-items: center;
 }
 
-.dashboard-title {
-	font-size: 50px;
+.dashboard-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 	margin-bottom: 20px;
-	color: #5ba4e8;
 }
 
 .dashboard-input-group1,

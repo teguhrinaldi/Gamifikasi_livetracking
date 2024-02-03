@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaEye, FaEyeSlash, FaUser } from 'react-icons/fa';
 import './login.css';
-import googleLogo from '../asseets/Google.png'; // Sesuaikan path dengan struktur folder proyek Anda
+import googleLogo from '../assets/Google.png'; // Sesuaikan path dengan struktur folder proyek Anda
 
 const LoginForm = () => {
 	const [showPassword, setShowPassword] = React.useState(false);

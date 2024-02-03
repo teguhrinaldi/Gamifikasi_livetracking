@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faList, faPlay, faStop } from '@fortawesome/free-solid-svg-icons';
+import { faPlay, faStop, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import './dashboard.css';
 
 const DashboardForm = () => {
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [showLeaderboard, setShowLeaderboard] = useState(false);
+	const [user, setUser] = useState('John Doe'); // Ganti dengan logika login sesuai dengan aplikasi Anda
 
 	const handlePlayStopClick = () => {
 		setIsPlaying(!isPlaying);
@@ -15,10 +16,25 @@ const DashboardForm = () => {
 		setShowLeaderboard(!showLeaderboard);
 	};
 
+	const handleLogout = () => {
+		// Logika logout disini
+	};
+
 	return (
 		<div className="dashboard-container">
+			<div className="dashboard-username-container">
+				<button className="dashboard-username-btn" onClick={toggleLeaderboard}>
+					Hi, {user}{' '}
+					<FontAwesomeIcon icon={faAngleDown} className="dropdown-icon" />
+				</button>
+				{showLeaderboard && (
+					<div className="dashboard-leaderboard-dropdown">
+						<span onClick={handleLogout}>Logout</span>
+					</div>
+				)}
+			</div>
 			<div className="dashboard-box">
-				<h2 className="dashboard-title">DASHBOARD</h2>
+				<div className="dashboard-header"></div>
 				<div className="dashboard-input-group1">
 					<label>Angkutan Umum</label>
 					<select>
