@@ -1,13 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash, FaUser } from 'react-icons/fa';
 import './login.css';
-import googleLogo from '../assets/Google.png'; // Sesuaikan path dengan struktur folder proyek Anda
+import googleLogo from '../assets/Google.png';
 
 const LoginForm = () => {
-	const [showPassword, setShowPassword] = React.useState(false);
+	const [showPassword, setShowPassword] = useState(false);
+	const [showLoginPopup, setShowLoginPopup] = useState(false); // State untuk menampilkan popup
+	const navigate = useNavigate();
 
 	const handleTogglePassword = () => {
 		setShowPassword(!showPassword);
+	};
+
+	const handleLogin = () => {
+		console.log('Login successful');
+		setShowLoginPopup(true);
+		setTimeout(() => {
+			setShowLoginPopup(false);
+			navigate('/dashboard');
+		}, 2000);
+	};
+
+	const handleRegisterClick = () => {
+		setShowLoginPopup(true);
+		setTimeout(() => {
+			setShowLoginPopup(false);
+			navigate('/register');
+		}, 2000);
 	};
 
 	return (
@@ -37,11 +57,14 @@ const LoginForm = () => {
 						/>
 						{showPassword ? (
 							<FaEyeSlash
-								className="input-icon"
+								className="input-icon eye-icon"
 								onClick={handleTogglePassword}
 							/>
 						) : (
-							<FaEye className="input-icon" onClick={handleTogglePassword} />
+							<FaEye
+								className="input-icon eye-icon"
+								onClick={handleTogglePassword}
+							/>
 						)}
 					</div>
 				</div>
@@ -54,9 +77,19 @@ const LoginForm = () => {
 				</div>
 
 				<div className="button-group">
-					<button className="login-button">Login</button>
-					<button className="register-button">Register</button>
+					<button className="login-button" onClick={handleLogin}>
+						Login
+					</button>
+					<button className="register-button" onClick={handleRegisterClick}>
+						Register
+					</button>
 				</div>
+
+				{showLoginPopup && (
+					<div className="success-popup" id="successPopup">
+						<p>Login successful, please wait...</p>
+					</div>
+				)}
 			</div>
 		</div>
 	);

@@ -1,13 +1,26 @@
 import React from 'react';
-import Register from './components/register/register';
-import Login from './components/login/login';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import RegisterForm from './components/register/register';
+import LoginForm from './components/login/login';
 import Dashboard from './components/Dashboard/Dashboard';
 
 const App = () => {
+	const handleRegisterSuccess = () => {
+		// Logika setelah register berhasil
+		console.log('Register success!');
+	};
+
 	return (
-		<div>
-			<Register />
-		</div>
+		<Router>
+			<Routes>
+				<Route path="/dashboard" element={<Dashboard />} />
+				<Route
+					path="/register"
+					element={<RegisterForm onRegisterSuccess={handleRegisterSuccess} />}
+				/>
+				<Route path="/login" element={<LoginForm />} />
+			</Routes>
+		</Router>
 	);
 };
 

@@ -6,7 +6,7 @@ import './dashboard.css';
 const DashboardForm = () => {
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [showLeaderboard, setShowLeaderboard] = useState(false);
-	const [user, setUser] = useState('John Doe'); // Ganti dengan logika login sesuai dengan aplikasi Anda
+	const [user, setUser] = useState('John Doe');
 
 	const handlePlayStopClick = () => {
 		setIsPlaying(!isPlaying);

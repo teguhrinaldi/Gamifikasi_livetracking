@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import './register.css';
 import googleLogo from '../assets/Google.png';
 
-const RegisterForm = () => {
+const RegisterForm = ({ onRegisterSuccess }) => {
+	const navigate = useNavigate();
 	const [email, setEmail] = useState('');
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
@@ -24,34 +25,27 @@ const RegisterForm = () => {
 		}
 
 		try {
-			const response = await axios.post('http://localhost:3001/register', {
-				email,
-				username,
-				password,
-			});
+			const userData = { username, password };
+			localStorage.setItem('userData', JSON.stringify(userData));
 
-			console.log(response.data.message);
-
-			// Set state untuk menampilkan popup
 			setShowSuccessPopup(true);
 
-			// Reset form setelah registrasi berhasil
 			setEmail('');
 			setUsername('');
 			setPassword('');
 
-			// Tutup popup setelah 3 detik
 			setTimeout(() => {
 				setShowSuccessPopup(false);
-			}, 3000);
+				navigate('/login');
+				onRegisterSuccess();
+			}, 2000);
 		} catch (error) {
 			console.error(error);
 		}
 	};
 
 	const handleGoogleSignUp = () => {
-		// Tambahkan logika untuk mengarahkan ke Google Sign Up
-		window.location.href = 'URL_GOOGLE_SIGNUP'; // Gantilah URL_GOOGLE_SIGNUP dengan URL sesuai kebutuhan
+		console.log('Google Sign Up');
 	};
 
 	return (
@@ -105,10 +99,6 @@ const RegisterForm = () => {
 					<button className="create-account-button" onClick={handleRegister}>
 						Create Account
 					</button>
-					<p className="login-link">
-						Already have an account?{' '}
-						<span className="login-link-text">Log in</span>
-					</p>
 				</div>
 				{showSuccessPopup && (
 					<div className="success-popup" id="successPopup">

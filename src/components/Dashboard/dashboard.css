@@ -15,7 +15,7 @@
 	right: 10px;
 	display: flex;
 	align-items: center;
-	justify-content: flex-end; /* Perubahan ini untuk memindahkan ke ujung kanan */
+	justify-content: flex-end;
 }
 
 .dashboard-username-btn {
@@ -48,7 +48,7 @@
 .dashboard-leaderboard-dropdown {
 	position: absolute;
 	top: 35px;
-	right: 0;
+	left: 0;
 	background-color: #5ba4e8;
 	border-radius: 5px;
 	padding: 10px;
@@ -57,10 +57,16 @@
 	align-items: flex-end;
 }
 
-.dashboard-leaderboard-dropdown span {
+.dashboard-leaderboard-dropdown ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	color: #fff;
+}
+
+.dashboard-leaderboard-dropdown ul li {
 	cursor: pointer;
 	margin-bottom: 5px;
-	color: #fff;
 }
 
 .dashboard-box {
@@ -81,6 +87,11 @@
 	justify-content: space-between;
 	align-items: center;
 	margin-bottom: 20px;
+}
+
+.dashboard-title {
+	font-size: 24px;
+	color: #5ba4e8;
 }
 
 .dashboard-input-group1,
