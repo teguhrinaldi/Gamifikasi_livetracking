@@ -11,9 +11,9 @@
 .register-box {
 	background-color: rgba(1, 1, 1, 0.8);
 	border-radius: 40px;
-	padding: 3%;
+	padding: 5%;
 	text-align: center;
-	max-width: 100%;
+	max-width: 600px;
 	margin: auto;
 	width: 80%;
 	display: flex;

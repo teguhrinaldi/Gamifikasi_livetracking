@@ -1,0 +1,90 @@
+/* src/components/Leaderboard.css */
+.leaderboard-body {
+	margin: 0;
+	padding: 0;
+	background-image: url('../assets/bg2.jpg'); /* Ganti path dengan path gambar Anda */
+	background-size: cover;
+	background-position: center;
+	font-family: 'Arial', sans-serif;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
+}
+
+.leaderboard-container {
+	width: 90%; /* Mengurangi lebar untuk tampilan responsif */
+	max-width: 400px; /* Batas lebar maksimum */
+	background-color: rgba(5, 87, 163, 0.6);
+	border-radius: 10px;
+	overflow: hidden;
+	margin: 10vh auto;
+}
+
+.leaderboard-header {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 10px;
+	background-color: rgba(0, 0, 0, 0.8);
+}
+
+.back-button {
+	background: none;
+	border: none;
+	cursor: pointer;
+	color: #fff;
+	margin-right: 10px;
+}
+
+.leaderboard-title {
+	text-align: center;
+	color: #fff;
+	margin: 0;
+	flex-grow: 1;
+	margin-right: 25px;
+}
+
+.trophy-icon {
+	font-size: 15px;
+}
+
+.trophy-icon.gold {
+	color: gold;
+}
+
+.trophy-icon.silver {
+	color: silver;
+}
+
+.trophy-icon.bronze {
+	color: #cd7f32;
+}
+
+.leaderboard-list {
+	border-radius: 5px;
+	font-size: 15px;
+	padding: 10px;
+}
+
+.leaderboard-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 10px;
+}
+
+.player-name {
+	margin-top: 5px;
+}
+
+.player-points {
+	margin-top: 5px;
+}
+
+@media screen and (max-width: 600px) {
+	.leaderboard-container {
+		width: 90%;
+		max-width: none;
+	}
+}

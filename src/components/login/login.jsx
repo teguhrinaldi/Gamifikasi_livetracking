@@ -6,7 +6,7 @@ import googleLogo from '../assets/Google.png';
 
 const LoginForm = () => {
 	const [showPassword, setShowPassword] = useState(false);
-	const [showLoginPopup, setShowLoginPopup] = useState(false); // State untuk menampilkan popup
+	const [showLoginPopup, setShowLoginPopup] = useState(false);
 	const navigate = useNavigate();
 
 	const handleTogglePassword = () => {
@@ -23,9 +23,7 @@ const LoginForm = () => {
 	};
 
 	const handleRegisterClick = () => {
-		setShowLoginPopup(true);
 		setTimeout(() => {
-			setShowLoginPopup(false);
 			navigate('/register');
 		}, 2000);
 	};
