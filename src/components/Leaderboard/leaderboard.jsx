@@ -1,4 +1,3 @@
-// src/components/Leaderboard.js
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -6,11 +5,11 @@ import {
 	faMedal,
 	faArrowLeft,
 } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from 'react-router-dom'; // Menggunakan useNavigate
+import { useNavigate } from 'react-router-dom';
 import './leaderboard.css';
 
 const Leaderboard = () => {
-	const navigate = useNavigate(); // Inisialisasi useNavigate
+	const navigate = useNavigate();
 
 	const leaderboardData = [
 		{ icon: faTrophy, name: 'John Doe', points: 500 },
@@ -19,7 +18,6 @@ const Leaderboard = () => {
 	];
 
 	const handleBackToDashboard = () => {
-		// Gunakan fungsi navigate untuk navigasi ke "/dashboard"
 		navigate('/dashboard');
 	};
 

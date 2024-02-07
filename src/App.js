@@ -3,11 +3,10 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import RegisterForm from './components/register/register';
 import LoginForm from './components/login/login';
 import Dashboard from './components/Dashboard/Dashboard';
-import Leaderboard from './components/Leaderboard/leaderboard';
+import Leaderboard from './components/Leaderboard/Leaderboard';
 
 const App = () => {
 	const handleRegisterSuccess = () => {
-		// Logika setelah register berhasil
 		console.log('Register success!');
 	};
 
