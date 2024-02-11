@@ -230,6 +230,31 @@ body .dashboard-container .dashboard-box {
 	align-items: flex-end;
 }
 
+.play-stop-icon-wrapper {
+	background-color: #000;
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
+	border: 2px solid #5ba4e8;
+	width: 50px;
+	height: 50px;
+	cursor: pointer;
+}
+
+.play-stop-icon {
+	font-size: 24px;
+	color: #5ba4e8;
+}
+
+.playing {
+	border-color: red;
+}
+
+.stopped {
+	border-color: green;
+}
+
 @media (max-width: 767px) {
 	.dashboard-box {
 		width: 100%;

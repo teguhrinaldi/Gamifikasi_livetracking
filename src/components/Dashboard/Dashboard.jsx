@@ -4,6 +4,22 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrophy, faPlay, faStop } from '@fortawesome/free-solid-svg-icons';
 import './dashboard.css';
 
+const StartButton = ({ onStartClick }) => {
+	return (
+		<div className="play-stop-icon-wrapper stopped" onClick={onStartClick}>
+			<FontAwesomeIcon icon={faPlay} className="play-stop-icon" />
+		</div>
+	);
+};
+
+const StopButton = ({ onStopClick }) => {
+	return (
+		<div className="play-stop-icon-wrapper playing" onClick={onStopClick}>
+			<FontAwesomeIcon icon={faStop} className="play-stop-icon" />
+		</div>
+	);
+};
+
 const DashboardForm = () => {
 	const [showDropdown, setShowDropdown] = useState(false);
 	const [user, setUser] = useState('John Doe');
@@ -20,10 +36,13 @@ const DashboardForm = () => {
 		}, 2000);
 	};
 
-	const handlePlayStopClick = () => {
-		setIsPlaying(!isPlaying);
+	const handleStartClick = () => {
+		setIsPlaying(true);
 	};
 
+	const handleStopClick = () => {
+		setIsPlaying(false);
+	};
 	return (
 		<div className="dashboard-container">
 			<div className="dashboard-username-container">
@@ -75,18 +94,11 @@ const DashboardForm = () => {
 					</select>
 				</div>
 				<div className="dashboard-button-group1">
-					<div
-						className={`play-stop-icon-wrapper ${
-							isPlaying ? 'playing' : 'stopped'
-						}`}
-						onClick={handlePlayStopClick}
-					>
-						{isPlaying ? (
-							<FontAwesomeIcon icon={faStop} className="play-stop-icon" />
-						) : (
-							<FontAwesomeIcon icon={faPlay} className="play-stop-icon" />
-						)}
-					</div>
+					{isPlaying ? (
+						<StopButton onStopClick={handleStopClick} />
+					) : (
+						<StartButton onStartClick={handleStartClick} />
+					)}
 				</div>
 			</div>
 		</div>
