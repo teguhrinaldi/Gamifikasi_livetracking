@@ -1,21 +1,34 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
 	faTrophy,
 	faMedal,
-	faArrowLeft,
+	faArrowLeft, 
 } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import './leaderboard.css';
 
 const Leaderboard = () => {
 	const navigate = useNavigate();
+	const [leaderboardData, setLeaderboardData] = useState([]);
 
-	const leaderboardData = [
-		{ icon: faTrophy, name: 'John Doe', points: 500 },
-		{ icon: faMedal, name: 'Jane Smith', points: 450 },
-		{ icon: faMedal, name: 'Bob Johnson', points: 400 },
-	];
+	useEffect(() => {
+		axios.get('http://localhost:5000/api/leaderboard')
+			.then(response => {
+				const data = response.data;
+				data.sort((a, b) => b.point - a.point);
+				const formattedData = data.slice(0, 3).map((item, index) => ({
+					icon: index === 0 ? faTrophy : faMedal,
+					name: item.nama,
+					points: item.point
+				}));
+				setLeaderboardData(formattedData);
+			})
+			.catch(error => {
+				console.error('Error fetching data:', error);
+			});
+	}, []);
 
 	const handleBackToDashboard = () => {
 		navigate('/dashboard');

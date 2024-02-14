@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { FaEye, FaEyeSlash, FaUser } from 'react-icons/fa';
 import './login.css';
 import googleLogo from '../assets/Google.png';
@@ -7,19 +8,32 @@ import googleLogo from '../assets/Google.png';
 const LoginForm = () => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [showLoginPopup, setShowLoginPopup] = useState(false);
+	const [username, setUsername] = useState('');
+	const [password, setPassword] = useState('');
 	const navigate = useNavigate();
 
 	const handleTogglePassword = () => {
 		setShowPassword(!showPassword);
 	};
 
-	const handleLogin = () => {
-		console.log('Login successful');
-		setShowLoginPopup(true);
-		setTimeout(() => {
-			setShowLoginPopup(false);
-			navigate('/dashboard');
-		}, 2000);
+	const handleLogin = async (e) => {
+		e.preventDefault();
+		try {
+			await axios.post('http://localhost:5000/api/login', {
+				username: username,
+				password: password
+			});
+			console.log('Login successful');
+			setShowLoginPopup(true);
+			setTimeout(() => {
+				setShowLoginPopup(false);
+				navigate('/dashboard');
+			}, 2000);
+		} catch (error) {
+			if (error.response) {
+				console.log('Failed login');
+			}
+		}
 	};
 
 	const handleRegisterClick = () => {
@@ -39,7 +53,7 @@ const LoginForm = () => {
 					</label>
 					<div className="icon-input">
 						<FaUser className="input-icon" />
-						<input type="text" id="username" placeholder="" />
+						<input type="text" id="username" placeholder="" value={username} onChange={(e) => setUsername(e.target.value)} />
 					</div>
 				</div>
 
@@ -48,10 +62,13 @@ const LoginForm = () => {
 						Password
 					</label>
 					<div className="icon-input">
-						<input
-							type={showPassword ? 'text' : 'password'}
+						<input 
+							type={showPassword ? 'text' : 'password'} 
 							id="password"
 							placeholder=""
+							value={password} 
+							onChange={(e) => 
+							setPassword(e.target.value)} 
 						/>
 						{showPassword ? (
 							<FaEyeSlash

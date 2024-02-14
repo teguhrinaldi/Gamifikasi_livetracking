@@ -13,7 +13,8 @@ const RegisterForm = ({ onRegisterSuccess }) => {
 	const [showRequiredFieldsMessage, setShowRequiredFieldsMessage] =
 		useState(false);
 
-	const handleRegister = async () => {
+	const handleRegister = async (e) => {
+		e.preventDefault();
 		if (email === '' || username === '' || password === '') {
 			setShowRequiredFieldsMessage(true);
 			return;
@@ -25,22 +26,31 @@ const RegisterForm = ({ onRegisterSuccess }) => {
 		}
 
 		try {
-			const userData = { username, password };
-			localStorage.setItem('userData', JSON.stringify(userData));
+			const userData = {email, username, password };
+			const response = await fetch('http://localhost:5000/api/register', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(userData)
+			});
 
-			setShowSuccessPopup(true);
+			if (response.ok) {
+				setShowSuccessPopup(true);
+				setEmail('');
+				setUsername('');
+				setPassword('');
 
-			setEmail('');
-			setUsername('');
-			setPassword('');
-
-			setTimeout(() => {
-				setShowSuccessPopup(false);
-				navigate('/login');
-				onRegisterSuccess();
-			}, 2000);
+				setTimeout(() => {
+					setShowSuccessPopup(false);
+					navigate('/login');
+					onRegisterSuccess();
+				}, 2000);
+			} else {
+				console.error('Failed to register:', response.statusText);
+			}
 		} catch (error) {
-			console.error(error);
+			console.error('Error occurred while registering:', error);
 		}
 	};
 
