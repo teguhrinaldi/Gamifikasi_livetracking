@@ -4,6 +4,7 @@ import RegisterForm from './components/register/register';
 import LoginForm from './components/login/login';
 import Dashboard from './components/Dashboard/Dashboard';
 import Leaderboard from './components/Leaderboard/Leaderboard';
+import UserList from './components/UserList/UserList'; // Import UserList component
 
 const App = () => {
 	const handleRegisterSuccess = () => {
@@ -20,6 +21,8 @@ const App = () => {
 				/>
 				<Route path="/login" element={<LoginForm />} />
 				<Route path="/leaderboard" element={<Leaderboard />} />
+				<Route path="/userlist" element={<UserList />} />{' '}
+				{/* Add UserList route */}
 				<Route path="/" element={<LoginForm />} />
 			</Routes>
 		</Router>

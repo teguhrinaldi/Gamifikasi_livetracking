@@ -131,6 +131,19 @@
 	background-color: #4488d6;
 }
 
+.error-popup {
+	animation: fadeOut 2s;
+	padding: 10px;
+	border-radius: 5px;
+	background-color: red;
+	color: #fff;
+	margin-top: 10px;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
 @media (max-width: 767px) {
 	.login-box {
 		width: 80%;

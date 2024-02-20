@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './register.css';
 import googleLogo from '../assets/Google.png';
 
@@ -25,8 +26,14 @@ const RegisterForm = ({ onRegisterSuccess }) => {
 		}
 
 		try {
-			const userData = { username, password };
-			localStorage.setItem('userData', JSON.stringify(userData));
+			const response = await axios.post('http://localhost:3001/api/register', {
+				email,
+				username,
+				password,
+			});
+
+			// Handle respons dari backend sesuai kebutuhan
+			console.log(response.data); // Tampilkan respons dari server
 
 			setShowSuccessPopup(true);
 
@@ -40,12 +47,25 @@ const RegisterForm = ({ onRegisterSuccess }) => {
 				onRegisterSuccess();
 			}, 2000);
 		} catch (error) {
-			console.error(error);
+			console.error('Registrasi gagal:', error.message);
 		}
 	};
 
-	const handleGoogleSignUp = () => {
-		console.log('Google Sign Up');
+	const handleGoogleSignUp = async () => {
+		try {
+			// Tambahkan logika Google Sign Up dan kirim data ke backend jika diperlukan
+			console.log('Google Sign Up');
+
+			// Contoh pengiriman data ke backend
+			// const response = await axios.post('http://localhost:3001/api/google-register', {
+			//   // Data Google Sign Up
+			// });
+
+			// Handle respons dari backend sesuai kebutuhan
+			// console.log(response.data);
+		} catch (error) {
+			console.error('Google Sign Up gagal:', error.message);
+		}
 	};
 
 	return (

@@ -17,7 +17,54 @@
 	align-items: center;
 	justify-content: flex-end;
 }
+.popup {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: white;
+	padding: 20px;
+	border-radius: 8px;
+	max-width: 400px;
+	width: 100%;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	z-index: 1000;
+}
 
+.popup-content {
+	text-align: center;
+}
+
+.popup-close-btn {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	cursor: pointer;
+	font-size: 20px;
+	color: #555;
+}
+
+.popup h2 {
+	margin-bottom: 10px;
+}
+
+.popup p {
+	margin-bottom: 20px;
+}
+
+.popup button {
+	background-color: #5ba4e8;
+	color: white;
+	padding: 10px 15px;
+	font-size: 16px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.popup button:hover {
+	background-color: #0a59a3;
+}
 .dashboard-username-btn {
 	background-color: #5ba4e8;
 	border: none;
@@ -134,6 +181,19 @@ body .dashboard-container .dashboard-box {
 	border-radius: 8px;
 	background-color: rgba(255, 255, 255, 40%);
 	color: black;
+}
+.dashboard-button-group1 button {
+	background-color: #5ba4e8; /* Warna hijau untuk tombol */
+	color: white; /* Warna teks putih */
+	padding: 10px 15px; /* Padding pada tombol */
+	font-size: 16px; /* Ukuran teks */
+	border: none; /* Hapus border */
+	border-radius: 5px; /* Agar tombol terlihat lebih cantik */
+	cursor: pointer; /* Tambahkan efek kursor */
+}
+
+.dashboard-button-group1 button:hover {
+	background-color: #0a59a3; /* Warna tombol saat dihover */
 }
 
 .dashboard-button-group1 {
