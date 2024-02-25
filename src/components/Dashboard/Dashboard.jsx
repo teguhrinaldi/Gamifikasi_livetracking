@@ -29,7 +29,7 @@ const StartButton = ({ onStartClick }) => {
 	);
 };
 
-const StopButton = ({ onStopClick }) => {
+const StopButton = ({ onStopClick, memenangkanPoin }) => {
 	return (
 		<div className="play-stop-icon-wrapper playing" onClick={onStopClick}>
 			<FontAwesomeIcon icon={faStop} className="play-stop-icon" />
@@ -40,6 +40,7 @@ const StopButton = ({ onStopClick }) => {
 const DashboardForm = ({
 	location: routeLocation,
 	onJalurPerjalananUpdate,
+	userPoints,
 }) => {
 	const [showDropdown, setShowDropdown] = useState(false);
 	const [isPlaying, setIsPlaying] = useState(false);
@@ -54,6 +55,7 @@ const DashboardForm = ({
 	const [jalurPerjalanan, setJalurPerjalanan] = useState(null); // Tambahkan ini
 	const [historyPerjalanan, setHistoryPerjalanan] = useState([]);
 	const navigate = useNavigate();
+	const [leaderboardData, setLeaderboardData] = useState([]);
 
 	const location = useLocation();
 
@@ -167,10 +169,30 @@ const DashboardForm = ({
 						console.log('Berhasil menghentikan perjalanan:', response.data);
 						const perjalananSelesai = {
 							...dataPerjalanan,
-							koordinat_start: jalurPerjalanan, // Menambahkan jalur perjalanan ke objek
+							koordinat_start: jalurPerjalanan,
 						};
-						setHistoryPerjalanan([...historyPerjalanan, perjalananSelesai]); // Menambahkan data perjalanan ke historyPerjalanan
-						showCongratulationsPopup(); // Tampilkan popup pesan selamat
+
+						// Perbarui historyPerjalanan
+						setHistoryPerjalanan([...historyPerjalanan, perjalananSelesai]);
+
+						// Perbarui leaderboardData jika memenangkan poin
+						if (memenangkanPoin(perjalananSelesai)) {
+							const updatedLeaderboardData = [
+								...leaderboardData,
+								{ name: username, points: 5 },
+							];
+							setLeaderboardData(updatedLeaderboardData);
+
+							// Tambahkan poin ke total poin
+							const updatedPoin = poin + 5; // Ubah sesuai dengan jumlah poin yang diberikan
+							setPoin(updatedPoin);
+
+							// Perbarui leaderboard setelah pembaruan poin
+							updateLeaderboard();
+
+							// Tampilkan popup pesan selamat
+							showCongratulationsPopup();
+						}
 					})
 					.catch((error) => {
 						console.error('Gagal menghentikan perjalanan:', error);
@@ -181,12 +203,33 @@ const DashboardForm = ({
 			});
 	};
 
+	const memenangkanPoin = (perjalananSelesai) => {
+		// Tambahkan logika sesuai dengan kriteria memenangkan poin
+		// Misalnya, Anda dapat memeriksa jarak perjalanan, durasi, atau kriteria lainnya
+		// Jika memenuhi kriteria, kembalikan true; jika tidak, kembalikan false.
+		return true; // Gantilah dengan logika yang sesuai
+	};
+
+	const updateLeaderboard = () => {
+		// Lakukan pengambilan data leaderboard dari server dan perbarui state leaderboardData
+		axios
+			.get('http://localhost:3001/api/leaderboard')
+			.then((response) => {
+				const leaderboardList = response.data.leaderboard;
+				setLeaderboardData(leaderboardList);
+			})
+			.catch((error) => {
+				console.error('Error fetching updated leaderboard data:', error);
+			});
+	};
+
 	return (
 		<div className="dashboard-container">
 			<div className="dashboard-username-container">
 				<button className="dashboard-username-btn" onClick={toggleDropdown}>
 					{userData?.username ? `Hi, ${userData.username}` : 'Hi, Guest'}
 				</button>
+
 				{showDropdown && (
 					<div className="dashboard-leaderboard-dropdown">
 						<span onClick={handleLogout}>Logout</span>
@@ -245,27 +288,16 @@ const DashboardForm = ({
 						</div>
 					)}
 					{isPlaying ? (
-						<StopButton onStopClick={handleStopClick} />
+						<StopButton
+							onStopClick={handleStopClick}
+							memenangkanPoin={memenangkanPoin}
+						/>
 					) : (
 						<StartButton onStartClick={handleStartClick} />
 					)}
 				</div>
 				{showCongratulations && (
-					<div className="popup">
-						<div className="popup-content">
-							<span
-								className="popup-close-btn"
-								onClick={() => setShowCongratulations(false)}
-							>
-								&times;
-							</span>
-							<h2>Selamat!</h2>
-							<p>Anda berhasil memenangkan 5 poin dari perjalanan!</p>
-							<button onClick={() => setShowCongratulations(false)}>
-								Tutup
-							</button>
-						</div>
-					</div>
+					<CongratulationsPopup onClose={() => setShowCongratulations(false)} />
 				)}
 			</div>
 		</div>

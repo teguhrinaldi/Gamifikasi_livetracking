@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const mysql = require('mysql');
 const cors = require('cors');
 const ExcelJS = require('exceljs');
+const next = require('next');
 
 const app = express();
 const port = 3001;
@@ -26,13 +27,47 @@ db.connect((err) => {
 app.use(bodyParser.json());
 app.use(cors());
 
-// Middleware untuk menangani kesalahan
+app.delete('/api/users/:userId', (req, res) => {
+	const userId = req.params.userId;
+
+	const sql = 'DELETE FROM register_data WHERE id = ?';
+	db.query(sql, [userId], (err, result) => {
+		if (err) {
+			console.error('Error deleting user:', err);
+			res.status(500).json({ error: 'Internal Server Error' });
+		} else {
+			console.log('User deleted successfully');
+			res.status(200).json({ message: 'User deleted successfully' });
+		}
+	});
+});
+
+app.delete('/api/perjalanans/:perjalananId', (req, res) => {
+	const perjalananId = req.params.perjalananId;
+
+	const sql = 'DELETE FROM data_perjalanan WHERE id = ?';
+	db.query(sql, [perjalananId], (err, result) => {
+		if (err) {
+			console.error('Error deleting perjalanan:', err);
+			res.status(500).json({ error: 'Internal Server Error' });
+		} else {
+			console.log('Perjalanan deleted successfully');
+			res.status(200).json({ message: 'Perjalanan deleted successfully' });
+		}
+	});
+});
+
+app.delete('/api/user-map-images/:userId', (req, res) => {
+	const userId = req.params.userId;
+	console.log('User map images deleted successfully');
+	res.status(200).json({ message: 'User map images deleted successfully' });
+});
+
 app.use((err, req, res, next) => {
 	console.error(err.stack);
 	res.status(500).json({ error: 'Terjadi kesalahan server.' });
 });
 
-// Middleware untuk menangani rute register
 app.post('/api/register', (req, res) => {
 	const { email, username, password } = req.body;
 
@@ -52,7 +87,26 @@ app.post('/api/register', (req, res) => {
 	});
 });
 
-// Middleware untuk menangani rute perjalanan
+app.get('/api/leaderboard', (req, res) => {
+	const sql =
+		'SELECT rd.username, SUM(dp.poin_diperoleh) AS total_points ' +
+		'FROM data_perjalanan dp ' +
+		'JOIN register_data rd ON dp.nama = rd.username ' + // Sesuaikan nama kolom dengan struktur tabel yang benar
+		'WHERE dp.poin_diperoleh > 0 ' +
+		'GROUP BY rd.username ' +
+		'ORDER BY total_points DESC ' +
+		'LIMIT 10';
+
+	db.query(sql, (err, result) => {
+		if (err) {
+			console.error('Error fetching leaderboard data:', err);
+			res.status(500).json({ error: 'Internal Server Error' });
+		}
+
+		res.status(200).json(result);
+	});
+});
+
 app.post('/api/mulai_perjalanan', (req, res) => {
 	const {
 		nama,
@@ -77,7 +131,7 @@ app.post('/api/mulai_perjalanan', (req, res) => {
 		],
 		(err, result) => {
 			if (err) {
-				return next(err);
+				return res.status(500).json({ error: 'Internal Server Error' });
 			} else {
 				console.log('Data perjalanan berhasil disimpan');
 				res.status(200).json({ message: 'Data perjalanan berhasil disimpan' });
@@ -86,7 +140,6 @@ app.post('/api/mulai_perjalanan', (req, res) => {
 	);
 });
 
-// Middleware untuk menangani rute stop perjalanan
 app.post('/api/stop_perjalanan', (req, res) => {
 	const { nama, koordinat_end } = req.body;
 
@@ -97,11 +150,7 @@ app.post('/api/stop_perjalanan', (req, res) => {
 	}
 
 	const waktuStop = new Date();
-
-	// Hitung panjang perjalanan (dummy implementation)
 	const panjangPerjalanan = 0;
-
-	// Hitung poin diperoleh (dummy implementation)
 	const poinDiperoleh = 5;
 
 	const sql =
@@ -119,10 +168,26 @@ app.post('/api/stop_perjalanan', (req, res) => {
 
 			if (result.affectedRows > 0) {
 				console.log('Perjalanan berhasil dihentikan');
-				res.status(200).json({
-					message: 'Perjalanan berhasil dihentikan.',
-					poin_diperoleh: poinDiperoleh, // Sertakan poin dalam respons
-				});
+
+				// Tambahkan poin ke leaderboard jika belum ada
+				const leaderboardSql =
+					'INSERT INTO leaderboard (username, total_points) VALUES (?, ?) ON DUPLICATE KEY UPDATE total_points = total_points + ?';
+
+				db.query(
+					leaderboardSql,
+					[nama, poinDiperoleh, poinDiperoleh],
+					(leaderboardErr, leaderboardResult) => {
+						if (leaderboardErr) {
+							console.error('Error updating leaderboard:', leaderboardErr);
+						}
+
+						// Respon ke klien
+						res.status(200).json({
+							message: 'Perjalanan berhasil dihentikan.',
+							poin_diperoleh: poinDiperoleh,
+						});
+					}
+				);
 			} else {
 				console.log('Perjalanan tidak ditemukan atau sudah dihentikan');
 				res
@@ -133,7 +198,6 @@ app.post('/api/stop_perjalanan', (req, res) => {
 	);
 });
 
-// Middleware untuk menangani rute login
 app.post('/api/login', (req, res) => {
 	const { email, username, password } = req.body;
 
@@ -147,7 +211,8 @@ app.post('/api/login', (req, res) => {
 		'SELECT * FROM register_data WHERE (email = ? OR username = ?) AND password = ?';
 	db.query(sql, [email, username, password], (err, result) => {
 		if (err) {
-			return next(err);
+			console.error('Error fetching login data:', err);
+			res.status(500).json({ error: 'Internal Server Error' });
 		}
 
 		if (result.length > 0) {
@@ -164,15 +229,14 @@ app.post('/api/login', (req, res) => {
 	});
 });
 
-// Middleware untuk menangani rute perjalanan
 app.get('/api/perjalanans', (req, res) => {
 	const sql = 'SELECT * FROM data_perjalanan';
 	db.query(sql, (err, result) => {
 		if (err) {
-			return next(err);
+			console.error('Error fetching perjalanan data:', err);
+			res.status(500).json({ error: 'Internal Server Error' });
 		}
 
-		// Mengonversi keterangan waktu ke dalam format yang diinginkan (tanpa '000Z')
 		const perjalanans = result.map((perjalanan) => {
 			return {
 				...perjalanan,
@@ -184,7 +248,6 @@ app.get('/api/perjalanans', (req, res) => {
 	});
 });
 
-// Middleware untuk menangani rute pengguna
 app.get('/api/users', (req, res) => {
 	const sql = 'SELECT * FROM register_data';
 	db.query(sql, (err, result) => {
@@ -196,7 +259,22 @@ app.get('/api/users', (req, res) => {
 	});
 });
 
-// Middleware untuk menangani rute export-to-excel
+app.post('/api/calculate-user-points', (req, res) => {
+	const perjalanansData = req.body.perjalanans;
+	const totalPoints = calculateTotalPoints(perjalanansData);
+	res.json({ totalPoints });
+});
+
+function calculateTotalPoints(perjalanans) {
+	let totalPoints = 0;
+
+	perjalanans.forEach((perjalanan) => {
+		totalPoints += perjalanan.poin_diperoleh || 0;
+	});
+
+	return totalPoints;
+}
+
 app.get('/api/export-to-excel', (req, res) => {
 	const sql = 'SELECT * FROM data_perjalanan';
 

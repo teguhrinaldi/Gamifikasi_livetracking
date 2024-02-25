@@ -35,6 +35,8 @@
 	cursor: pointer;
 	color: #fff;
 	margin-right: 10px;
+	font-size: 20px;
+	margin-top: 18px;
 }
 
 .leaderboard-title {
@@ -42,7 +44,9 @@
 	color: #fff;
 	margin: 0;
 	flex-grow: 1;
-	margin-right: 25px;
+	align-items: center;
+	justify-content: center;
+	margin-left: 68px;
 }
 
 .trophy-icon {
@@ -76,10 +80,12 @@
 
 .player-name {
 	margin-top: 5px;
+	color: #fff;
 }
 
 .player-points {
 	margin-top: 5px;
+	color: #fff;
 }
 
 @media screen and (max-width: 600px) {

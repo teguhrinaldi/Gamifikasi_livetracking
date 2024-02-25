@@ -11,18 +11,23 @@ const UserList = () => {
 	const [userMapImages, setUserMapImages] = useState({});
 
 	useEffect(() => {
-		// Panggil API untuk mendapatkan data pengguna
 		axios
 			.get('http://localhost:3001/api/users')
 			.then((response) => {
 				console.log('Data pengguna dari server:', response.data);
-				setUsers(response.data);
+
+				// Tambahkan atribut points pada objek pengguna
+				const usersWithPoints = response.data.map((user) => ({
+					...user,
+					points: calculateUserPoints(user.id),
+				}));
+
+				setUsers(usersWithPoints);
 			})
 			.catch((error) => {
 				console.error('Error fetching user data:', error);
 			});
 
-		// Panggil API untuk mendapatkan data perjalanan
 		axios
 			.get('http://localhost:3001/api/perjalanans')
 			.then((response) => {
@@ -34,6 +39,17 @@ const UserList = () => {
 				console.error('Error fetching perjalanan data:', error);
 			});
 	}, []);
+
+	// Fungsi untuk menghitung total poin pengguna berdasarkan ID pengguna
+	const calculateUserPoints = (userId) => {
+		const userJourneys = perjalanans.filter(
+			(perjalanan) => perjalanan.userId === userId
+		);
+		return userJourneys.reduce(
+			(totalPoints, journey) => totalPoints + journey.poin_diperoleh,
+			0
+		);
+	};
 
 	const handleExportToExcel = () => {
 		if (users.length === 0 || perjalanans.length === 0) {
@@ -49,6 +65,34 @@ const UserList = () => {
 		XLSX.utils.book_append_sheet(wb, wsPerjalanans, 'Perjalanans');
 
 		XLSX.writeFile(wb, 'users_and_perjalanans.xlsx');
+	};
+
+	const handleDeleteUser = (userId) => {
+		axios
+			.delete(`http://localhost:3001/api/users/${userId}`)
+			.then((response) => {
+				console.log('Data pengguna berhasil dihapus:', response.data);
+				// Setelah pengguna dihapus, perbarui daftar pengguna
+				setUsers(users.filter((user) => user.id !== userId));
+			})
+			.catch((error) => {
+				console.error('Error menghapus data pengguna:', error);
+			});
+	};
+
+	const handleDeletePerjalanan = (perjalananId) => {
+		axios
+			.delete(`http://localhost:3001/api/perjalanans/${perjalananId}`)
+			.then((response) => {
+				console.log('Data perjalanan berhasil dihapus:', response.data);
+				// Setelah perjalanan dihapus, perbarui daftar perjalanan
+				setPerjalanans(
+					perjalanans.filter((perjalanan) => perjalanan.id !== perjalananId)
+				);
+			})
+			.catch((error) => {
+				console.error('Error menghapus data perjalanan:', error);
+			});
 	};
 
 	const renderUserMapImages = (perjalanansData) => {
@@ -101,6 +145,8 @@ const UserList = () => {
 						<th>Email</th>
 						<th>Username</th>
 						<th>Password</th>
+						<th>Points</th>
+						<th>Action</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -109,6 +155,10 @@ const UserList = () => {
 							<td>{user.email}</td>
 							<td>{user.username}</td>
 							<td>{user.password}</td>
+							<td>{user.points}</td>
+							<td>
+								<button onClick={() => handleDeleteUser(user.id)}>Hapus</button>
+							</td>
 						</tr>
 					))}
 				</tbody>
@@ -129,6 +179,7 @@ const UserList = () => {
 						<th>Koordinat End</th>
 						<th>Panjang Perjalanan</th>
 						<th>Poin Diperoleh</th>
+						<th>Action</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -144,6 +195,11 @@ const UserList = () => {
 							<td>{perjalanan.koordinat_end}</td>
 							<td>{perjalanan.panjang_perjalanan}</td>
 							<td>{perjalanan.poin_diperoleh}</td>
+							<td>
+								<button onClick={() => handleDeletePerjalanan(perjalanan.id)}>
+									Hapus
+								</button>
+							</td>
 						</tr>
 					))}
 				</tbody>
@@ -155,19 +211,25 @@ const UserList = () => {
 				<thead>
 					<tr>
 						<th>Nama Pengguna</th>
+						<th>Points</th>
 						<th>Peta Perjalanan</th>
+						<th>Action</th>
 					</tr>
 				</thead>
 				<tbody>
 					{users.map((user) => (
 						<tr key={user.id}>
 							<td>{user.username}</td>
+							<td>{user.points}</td>
 							<td>
 								<img
 									src={userMapImages[user.id]}
 									alt={`Map of ${user.username}'s journeys`}
 									style={{ width: '200px', height: '200px' }}
 								/>
+							</td>
+							<td>
+								<button onClick={() => handleDeleteUser(user.id)}>Hapus</button>
 							</td>
 						</tr>
 					))}
