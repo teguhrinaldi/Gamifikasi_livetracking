@@ -2,13 +2,29 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import * as XLSX from 'xlsx';
 import './user.css';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
 
 const UserList = () => {
 	const [users, setUsers] = useState([]);
 	const [perjalanans, setPerjalanans] = useState([]);
-	const [userMapImages, setUserMapImages] = useState({});
+	const [locations, setLocations] = useState({});
+
+	const reverseGeocode = async (coords) => {
+		const [latitude, longitude] = coords;
+
+		try {
+			const API_KEY = 'd9c09368b3bd4a57b64bbe2c024808c3';
+			const response = await axios.get(
+				`https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${API_KEY}`
+			);
+
+			// Ambil nama lokasi dari respons API
+			const locationName = response.data.results[0].formatted;
+			return locationName;
+		} catch (error) {
+			console.error('Error reverse geocoding:', error);
+			return `${latitude}, ${longitude}`;
+		}
+	};
 
 	useEffect(() => {
 		axios
@@ -16,7 +32,6 @@ const UserList = () => {
 			.then((response) => {
 				console.log('Data pengguna dari server:', response.data);
 
-				// Tambahkan atribut points pada objek pengguna
 				const usersWithPoints = response.data.map((user) => ({
 					...user,
 					points: calculateUserPoints(user.id),
@@ -33,14 +48,40 @@ const UserList = () => {
 			.then((response) => {
 				console.log('Data perjalanan dari server:', response.data);
 				setPerjalanans(response.data);
-				renderUserMapImages(response.data);
 			})
 			.catch((error) => {
 				console.error('Error fetching perjalanan data:', error);
 			});
 	}, []);
 
-	// Fungsi untuk menghitung total poin pengguna berdasarkan ID pengguna
+	useEffect(() => {
+		if (perjalanans.length > 0) {
+			const fetchLocations = async () => {
+				const locationsData = {};
+
+				await Promise.all(
+					perjalanans.map(async (perjalanan) => {
+						const startLocation = await reverseGeocode(
+							perjalanan.koordinat_start.split(',').map(Number)
+						);
+						const endLocation = await reverseGeocode(
+							perjalanan.koordinat_end.split(',').map(Number)
+						);
+
+						locationsData[perjalanan.id] = {
+							start: startLocation,
+							end: endLocation,
+						};
+					})
+				);
+
+				setLocations(locationsData);
+			};
+
+			fetchLocations();
+		}
+	}, [perjalanans]);
+
 	const calculateUserPoints = (userId) => {
 		const userJourneys = perjalanans.filter(
 			(perjalanan) => perjalanan.userId === userId
@@ -72,7 +113,6 @@ const UserList = () => {
 			.delete(`http://localhost:3001/api/users/${userId}`)
 			.then((response) => {
 				console.log('Data pengguna berhasil dihapus:', response.data);
-				// Setelah pengguna dihapus, perbarui daftar pengguna
 				setUsers(users.filter((user) => user.id !== userId));
 			})
 			.catch((error) => {
@@ -85,7 +125,6 @@ const UserList = () => {
 			.delete(`http://localhost:3001/api/perjalanans/${perjalananId}`)
 			.then((response) => {
 				console.log('Data perjalanan berhasil dihapus:', response.data);
-				// Setelah perjalanan dihapus, perbarui daftar perjalanan
 				setPerjalanans(
 					perjalanans.filter((perjalanan) => perjalanan.id !== perjalananId)
 				);
@@ -95,49 +134,11 @@ const UserList = () => {
 			});
 	};
 
-	const renderUserMapImages = (perjalanansData) => {
-		const userMapImagesData = {};
-
-		perjalanansData.forEach((perjalanan) => {
-			const startCoords = perjalanan.koordinat_start.split(',').map(Number);
-			const endCoords = perjalanan.koordinat_end.split(',').map(Number);
-
-			const mapInstance = L.map(`map-${perjalanan.id}`).setView(
-				startCoords,
-				10
-			);
-
-			L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-				attribution: '© OpenStreetMap contributors',
-			}).addTo(mapInstance);
-
-			L.marker(startCoords)
-				.addTo(mapInstance)
-				.bindPopup(`Start: ${startCoords}`)
-				.openPopup();
-
-			L.marker(endCoords)
-				.addTo(mapInstance)
-				.bindPopup(`End: ${endCoords}`)
-				.openPopup();
-
-			L.polyline([startCoords, endCoords], { color: 'blue' }).addTo(
-				mapInstance
-			);
-
-			// Simpan gambar peta sebagai data URL
-			userMapImagesData[perjalanan.id] = mapInstance.toDataURL();
-		});
-
-		setUserMapImages(userMapImagesData);
-	};
-
 	return (
 		<div>
 			<h1>User List</h1>
 			<button onClick={handleExportToExcel}>Export to Excel</button>
 
-			{/* Tampilkan data Users */}
 			<h2>Data Users</h2>
 			<table>
 				<thead>
@@ -164,7 +165,6 @@ const UserList = () => {
 				</tbody>
 			</table>
 
-			{/* Tampilkan data Perjalanan */}
 			<h2>Data Perjalanan</h2>
 			<table>
 				<thead>
@@ -191,45 +191,14 @@ const UserList = () => {
 							<td>{perjalanan.jenis_angkutan}</td>
 							<td>{perjalanan.maksud_perjalanan}</td>
 							<td>{perjalanan.tujuan_perjalanan}</td>
-							<td>{perjalanan.koordinat_start}</td>
-							<td>{perjalanan.koordinat_end}</td>
+							<td>{locations[perjalanan.id]?.start || 'Loading...'}</td>
+							<td>{locations[perjalanan.id]?.end || 'Loading...'}</td>
 							<td>{perjalanan.panjang_perjalanan}</td>
 							<td>{perjalanan.poin_diperoleh}</td>
 							<td>
 								<button onClick={() => handleDeletePerjalanan(perjalanan.id)}>
 									Hapus
 								</button>
-							</td>
-						</tr>
-					))}
-				</tbody>
-			</table>
-
-			{/* Tampilkan data Pengguna dan Peta Perjalanan */}
-			<h2>Data Pengguna dan Peta Perjalanan</h2>
-			<table>
-				<thead>
-					<tr>
-						<th>Nama Pengguna</th>
-						<th>Points</th>
-						<th>Peta Perjalanan</th>
-						<th>Action</th>
-					</tr>
-				</thead>
-				<tbody>
-					{users.map((user) => (
-						<tr key={user.id}>
-							<td>{user.username}</td>
-							<td>{user.points}</td>
-							<td>
-								<img
-									src={userMapImages[user.id]}
-									alt={`Map of ${user.username}'s journeys`}
-									style={{ width: '200px', height: '200px' }}
-								/>
-							</td>
-							<td>
-								<button onClick={() => handleDeleteUser(user.id)}>Hapus</button>
 							</td>
 						</tr>
 					))}
