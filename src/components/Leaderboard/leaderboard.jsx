@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faTrophy } from '@fortawesome/free-solid-svg-icons';
+import { faTrophy } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './leaderboard.css';
@@ -17,7 +17,6 @@ const Leaderboard = () => {
 				console.log('Leaderboard response:', response.data);
 				const leaderboardList = response.data;
 				const newTotalPoints = response.data.totalPoints;
-
 				setLeaderboardData(leaderboardList);
 				setTotalPoints(newTotalPoints);
 			})
@@ -35,7 +34,6 @@ const Leaderboard = () => {
 			<div className="leaderboard-container">
 				<div className="leaderboard-header">
 					<h2 className="leaderboard-title">LEADERBOARD</h2>
-					<p>Total Poin: {totalPoints}</p>
 				</div>
 				<div className="leaderboard-list">
 					{leaderboardData.map((player, index) => (

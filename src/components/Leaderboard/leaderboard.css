@@ -1,8 +1,7 @@
-/* src/components/Leaderboard.css */
 .leaderboard-body {
 	margin: 0;
 	padding: 0;
-	background-image: url('../assets/bg2.jpg'); /* Ganti path dengan path gambar Anda */
+	background-image: url('../assets/bg2.jpg');
 	background-size: cover;
 	background-position: center;
 	font-family: 'Arial', sans-serif;
@@ -13,8 +12,8 @@
 }
 
 .leaderboard-container {
-	width: 90%; /* Mengurangi lebar untuk tampilan responsif */
-	max-width: 400px; /* Batas lebar maksimum */
+	width: 90%;
+	max-width: 400px;
 	background-color: rgba(5, 87, 163, 0.6);
 	border-radius: 10px;
 	overflow: hidden;
@@ -46,7 +45,6 @@
 	flex-grow: 1;
 	align-items: center;
 	justify-content: center;
-	margin-left: 68px;
 }
 
 .trophy-icon {

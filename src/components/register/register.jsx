@@ -32,8 +32,7 @@ const RegisterForm = ({ onRegisterSuccess }) => {
 				password,
 			});
 
-			// Handle respons dari backend sesuai kebutuhan
-			console.log(response.data); // Tampilkan respons dari server
+			console.log(response.data);
 
 			setShowSuccessPopup(true);
 
@@ -53,16 +52,7 @@ const RegisterForm = ({ onRegisterSuccess }) => {
 
 	const handleGoogleSignUp = async () => {
 		try {
-			// Tambahkan logika Google Sign Up dan kirim data ke backend jika diperlukan
 			console.log('Google Sign Up');
-
-			// Contoh pengiriman data ke backend
-			// const response = await axios.post('http://localhost:3001/api/google-register', {
-			//   // Data Google Sign Up
-			// });
-
-			// Handle respons dari backend sesuai kebutuhan
-			// console.log(response.data);
 		} catch (error) {
 			console.error('Google Sign Up gagal:', error.message);
 		}
@@ -108,12 +98,6 @@ const RegisterForm = ({ onRegisterSuccess }) => {
 						value={password}
 						onChange={(e) => setPassword(e.target.value)}
 					/>
-				</div>
-				<div className="google-signup">
-					<button className="google-signup-button" onClick={handleGoogleSignUp}>
-						<img src={googleLogo} alt="Google Logo" className="google-icon" />{' '}
-						Sign up with Google
-					</button>
 				</div>
 				<div className="button-group1">
 					<button className="create-account-button" onClick={handleRegister}>

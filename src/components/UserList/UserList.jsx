@@ -12,13 +12,10 @@ const UserList = () => {
 		const [latitude, longitude] = coords;
 
 		try {
-			const API_KEY = 'd9c09368b3bd4a57b64bbe2c024808c3';
 			const response = await axios.get(
-				`https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${API_KEY}`
+				`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`
 			);
-
-			// Ambil nama lokasi dari respons API
-			const locationName = response.data.results[0].formatted;
+			const locationName = response.data.display_name;
 			return locationName;
 		} catch (error) {
 			console.error('Error reverse geocoding:', error);
@@ -31,18 +28,15 @@ const UserList = () => {
 			.get('http://localhost:3001/api/users')
 			.then((response) => {
 				console.log('Data pengguna dari server:', response.data);
-
 				const usersWithPoints = response.data.map((user) => ({
 					...user,
 					points: calculateUserPoints(user.id),
 				}));
-
 				setUsers(usersWithPoints);
 			})
 			.catch((error) => {
 				console.error('Error fetching user data:', error);
 			});
-
 		axios
 			.get('http://localhost:3001/api/perjalanans')
 			.then((response) => {
@@ -58,7 +52,6 @@ const UserList = () => {
 		if (perjalanans.length > 0) {
 			const fetchLocations = async () => {
 				const locationsData = {};
-
 				await Promise.all(
 					perjalanans.map(async (perjalanan) => {
 						const startLocation = await reverseGeocode(
@@ -67,17 +60,25 @@ const UserList = () => {
 						const endLocation = await reverseGeocode(
 							perjalanan.koordinat_end.split(',').map(Number)
 						);
-
+						const startCoords = perjalanan.koordinat_start
+							.split(',')
+							.map(Number);
+						const endCoords = perjalanan.koordinat_end.split(',').map(Number);
+						const journeyDistance = haversineDistance(
+							startCoords[0],
+							startCoords[1],
+							endCoords[0],
+							endCoords[1]
+						);
 						locationsData[perjalanan.id] = {
 							start: startLocation,
 							end: endLocation,
+							distance: journeyDistance,
 						};
 					})
 				);
-
 				setLocations(locationsData);
 			};
-
 			fetchLocations();
 		}
 	}, [perjalanans]);
@@ -92,20 +93,50 @@ const UserList = () => {
 		);
 	};
 
-	const handleExportToExcel = () => {
+	const handleExportToExcel = async () => {
 		if (users.length === 0 || perjalanans.length === 0) {
 			console.warn('Tidak ada data pengguna atau perjalanan untuk diekspor.');
 			return;
 		}
+		try {
+			const enrichedPerjalanans = await Promise.all(
+				perjalanans.map(async (perjalanan) => {
+					const startLocation = await reverseGeocode(
+						perjalanan.koordinat_start.split(',').map(Number)
+					);
+					const endLocation = await reverseGeocode(
+						perjalanan.koordinat_end.split(',').map(Number)
+					);
 
-		const wsUsers = XLSX.utils.json_to_sheet(users);
-		const wsPerjalanans = XLSX.utils.json_to_sheet(perjalanans);
+					const startCoords = perjalanan.koordinat_start.split(',').map(Number);
+					const endCoords = perjalanan.koordinat_end.split(',').map(Number);
+					const journeyDistance = haversineDistance(
+						startCoords[0],
+						startCoords[1],
+						endCoords[0],
+						endCoords[1]
+					);
 
-		const wb = XLSX.utils.book_new();
-		XLSX.utils.book_append_sheet(wb, wsUsers, 'Users');
-		XLSX.utils.book_append_sheet(wb, wsPerjalanans, 'Perjalanans');
-
-		XLSX.writeFile(wb, 'users_and_perjalanans.xlsx');
+					return {
+						...perjalanan,
+						koordinat_start: `${startLocation} (${perjalanan.koordinat_start})`,
+						koordinat_end: `${endLocation} (${perjalanan.koordinat_end})`,
+						panjang_perjalanan: formatDistance(journeyDistance) || 'Loading...',
+					};
+				})
+			);
+			const wsPerjalanans = XLSX.utils.json_to_sheet(enrichedPerjalanans);
+			const wb = XLSX.utils.book_new();
+			XLSX.utils.book_append_sheet(
+				wb,
+				XLSX.utils.json_to_sheet(users),
+				'Users'
+			);
+			XLSX.utils.book_append_sheet(wb, wsPerjalanans, 'Perjalanans');
+			XLSX.writeFile(wb, 'users_and_perjalanans.xlsx');
+		} catch (error) {
+			console.error('Error saat mengekspor data ke Excel:', error);
+		}
 	};
 
 	const handleDeleteUser = (userId) => {
@@ -132,6 +163,33 @@ const UserList = () => {
 			.catch((error) => {
 				console.error('Error menghapus data perjalanan:', error);
 			});
+	};
+
+	const haversineDistance = (lat1, lon1, lat2, lon2) => {
+		const R = 6371;
+		const dLat = (lat2 - lat1) * (Math.PI / 180);
+		const dLon = (lon2 - lon1) * (Math.PI / 180);
+		const a =
+			Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+			Math.cos(lat1 * (Math.PI / 180)) *
+				Math.cos(lat2 * (Math.PI / 180)) *
+				Math.sin(dLon / 2) *
+				Math.sin(dLon / 2);
+		const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+		const distance = R * c;
+		return distance;
+	};
+
+	const formatDistance = (distance) => {
+		if (distance !== undefined) {
+			if (distance < 1) {
+				return `${(distance * 1000).toFixed(0)} m`;
+			} else {
+				return `${distance.toFixed(2)} km`;
+			}
+		} else {
+			return 'Distance not available';
+		}
 	};
 
 	return (
@@ -164,7 +222,6 @@ const UserList = () => {
 					))}
 				</tbody>
 			</table>
-
 			<h2>Data Perjalanan</h2>
 			<table>
 				<thead>
@@ -193,7 +250,10 @@ const UserList = () => {
 							<td>{perjalanan.tujuan_perjalanan}</td>
 							<td>{locations[perjalanan.id]?.start || 'Loading...'}</td>
 							<td>{locations[perjalanan.id]?.end || 'Loading...'}</td>
-							<td>{perjalanan.panjang_perjalanan}</td>
+							<td>
+								{formatDistance(locations[perjalanan.id]?.distance) ||
+									'Loading...'}
+							</td>
 							<td>{perjalanan.poin_diperoleh}</td>
 							<td>
 								<button onClick={() => handleDeletePerjalanan(perjalanan.id)}>

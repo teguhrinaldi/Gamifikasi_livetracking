@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash, FaUser } from 'react-icons/fa';
 import './login.css';
-import googleLogo from '../assets/Google.png';
 import axios from 'axios';
 
 const LoginForm = () => {
@@ -11,6 +10,7 @@ const LoginForm = () => {
 	const [showLoginFailedPopup, setShowLoginFailedPopup] = useState(false);
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
+	const [rememberMe, setRememberMe] = useState(false);
 	const [isLoggingIn, setIsLoggingIn] = useState(false);
 	const [userData, setUserData] = useState(null);
 
@@ -18,6 +18,15 @@ const LoginForm = () => {
 
 	const handleLoginSuccess = (userData) => {
 		localStorage.setItem('userData', JSON.stringify(userData));
+		if (rememberMe) {
+			localStorage.setItem('username', username);
+			localStorage.setItem('password', password);
+			localStorage.setItem('rememberMe', rememberMe);
+		} else {
+			localStorage.removeItem('username');
+			localStorage.removeItem('password');
+			localStorage.removeItem('rememberMe');
+		}
 		navigate('/dashboard', { state: { username: userData.username } });
 	};
 
@@ -31,6 +40,10 @@ const LoginForm = () => {
 
 	const handlePasswordChange = (event) => {
 		setPassword(event.target.value);
+	};
+
+	const handleRememberMeChange = (event) => {
+		setRememberMe(event.target.checked);
 	};
 
 	const handleLogin = async () => {
@@ -50,7 +63,6 @@ const LoginForm = () => {
 				username: response.data.username,
 			});
 
-			// Panggil handleLoginSuccess dengan meneruskan data pengguna
 			handleLoginSuccess(response.data);
 
 			setShowLoginPopup(true);
@@ -122,11 +134,14 @@ const LoginForm = () => {
 					</div>
 				</div>
 
-				<div className="google-login">
-					<button className="google-login-button">
-						<img src={googleLogo} alt="Google Logo" className="google-icon" />
-						Sign in with Google
-					</button>
+				<div className="remember-me">
+					<input
+						type="checkbox"
+						id="rememberMe"
+						checked={rememberMe}
+						onChange={handleRememberMeChange}
+					/>
+					<label htmlFor="rememberMe">Remember Me</label>
 				</div>
 
 				<div className="button-group">

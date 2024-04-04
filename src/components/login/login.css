@@ -23,7 +23,7 @@
 
 .login-title {
 	font-size: 50px;
-	margin-bottom: 20px;
+	margin-bottom: 30px;
 	color: #5ba4e8;
 }
 
@@ -76,8 +76,10 @@
 .button-group {
 	display: flex;
 	flex-direction: row;
-	justify-content: space-between;
-	margin-top: 20px;
+	justify-content: center;
+	margin-top: 30px;
+	align-items: center;
+	margin-right: 30px;
 }
 .google-login {
 	margin-top: 15px;
@@ -106,6 +108,7 @@
 	cursor: pointer;
 	border-radius: 10px;
 	margin-left: 8px;
+	margin-left: auto;
 }
 
 .login-button {
@@ -144,6 +147,22 @@
 	transform: translate(-50%, -50%);
 }
 
+.remember-me {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start; /* Pindahkan ke kiri */
+	margin-bottom: 15px;
+	color: #fff; /* Ubah warna teks sesuai kebutuhan */
+}
+
+.remember-me input[type='checkbox'] {
+	margin-right: 10px;
+}
+
+.remember-me label {
+	font-size: 14px;
+}
+
 @media (max-width: 767px) {
 	.login-box {
 		width: 80%;
@@ -156,6 +175,7 @@
 	.button-group {
 		flex-direction: column;
 		margin-top: 15px;
+		text-align: center;
 	}
 
 	.login-button,

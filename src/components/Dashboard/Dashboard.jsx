@@ -52,7 +52,7 @@ const DashboardForm = ({
 	const [perjalanans, setPerjalanans] = useState([]);
 	const [showCongratulations, setShowCongratulations] = useState(false);
 	const [userData, setUserData] = useState(null);
-	const [jalurPerjalanan, setJalurPerjalanan] = useState(null); // Tambahkan ini
+	const [jalurPerjalanan, setJalurPerjalanan] = useState(null);
 	const [historyPerjalanan, setHistoryPerjalanan] = useState([]);
 	const navigate = useNavigate();
 	const [leaderboardData, setLeaderboardData] = useState([]);
@@ -120,11 +120,9 @@ const DashboardForm = ({
 
 	const handleStartClick = () => {
 		setIsPlaying(true);
-
 		getDeviceLocation()
 			.then((coordinates) => {
 				setCurrentLocation(coordinates);
-
 				const dataPerjalanan = {
 					nama: username,
 					jenis_angkutan: document.getElementById('jenisAngkutan').value,
@@ -134,12 +132,11 @@ const DashboardForm = ({
 						? `${coordinates.latitude},${coordinates.longitude}`
 						: 'koordinat_start_dummy',
 				};
-
 				sendStartRequest(dataPerjalanan)
 					.then((response) => {
 						console.log('Berhasil memulai perjalanan:', response.data);
 						const updatedJalurPerjalanan = [coordinates];
-						setJalurPerjalanan(updatedJalurPerjalanan); // Menambahkan koordinat start ke jalurPerjalanan
+						setJalurPerjalanan(updatedJalurPerjalanan);
 					})
 					.catch((error) => {
 						console.error('Gagal memulai perjalanan:', error);
@@ -163,7 +160,6 @@ const DashboardForm = ({
 						? `${coordinates.latitude},${coordinates.longitude}`
 						: 'koordinat_end_dummy',
 				};
-
 				sendStopRequest(dataPerjalanan)
 					.then((response) => {
 						console.log('Berhasil menghentikan perjalanan:', response.data);
@@ -171,26 +167,16 @@ const DashboardForm = ({
 							...dataPerjalanan,
 							koordinat_start: jalurPerjalanan,
 						};
-
-						// Perbarui historyPerjalanan
 						setHistoryPerjalanan([...historyPerjalanan, perjalananSelesai]);
-
-						// Perbarui leaderboardData jika memenangkan poin
 						if (memenangkanPoin(perjalananSelesai)) {
 							const updatedLeaderboardData = [
 								...leaderboardData,
 								{ name: username, points: 5 },
 							];
 							setLeaderboardData(updatedLeaderboardData);
-
-							// Tambahkan poin ke total poin
-							const updatedPoin = poin + 5; // Ubah sesuai dengan jumlah poin yang diberikan
+							const updatedPoin = poin + 5;
 							setPoin(updatedPoin);
-
-							// Perbarui leaderboard setelah pembaruan poin
 							updateLeaderboard();
-
-							// Tampilkan popup pesan selamat
 							showCongratulationsPopup();
 						}
 					})
@@ -204,14 +190,10 @@ const DashboardForm = ({
 	};
 
 	const memenangkanPoin = (perjalananSelesai) => {
-		// Tambahkan logika sesuai dengan kriteria memenangkan poin
-		// Misalnya, Anda dapat memeriksa jarak perjalanan, durasi, atau kriteria lainnya
-		// Jika memenuhi kriteria, kembalikan true; jika tidak, kembalikan false.
-		return true; // Gantilah dengan logika yang sesuai
+		return true;
 	};
 
 	const updateLeaderboard = () => {
-		// Lakukan pengambilan data leaderboard dari server dan perbarui state leaderboardData
 		axios
 			.get('http://localhost:3001/api/leaderboard')
 			.then((response) => {
@@ -229,7 +211,6 @@ const DashboardForm = ({
 				<button className="dashboard-username-btn" onClick={toggleDropdown}>
 					{userData?.username ? `Hi, ${userData.username}` : 'Hi, Guest'}
 				</button>
-
 				{showDropdown && (
 					<div className="dashboard-leaderboard-dropdown">
 						<span onClick={handleLogout}>Logout</span>
@@ -246,7 +227,7 @@ const DashboardForm = ({
 					<select id="jenisAngkutan">
 						<option value="KRL">KRL(KERETA REL LISTRIK)</option>
 						<option value="MRT">MRT(MASS RAPIT TRANSIT)</option>
-						<option value="LRT BODEBEK">LRT (BODEBEK)</option>
+						<option value="LRT BODEBEK">LRT (JABODEBEK)</option>
 						<option value="LRT JAKARTA">LRT (JAKARTA)</option>
 						<option value="TIJE">TIJE (TRANS JAKARTA)</option>
 					</select>
@@ -258,12 +239,16 @@ const DashboardForm = ({
 						<option value="berwisata">BERWISATA</option>
 						<option value="berbelanja">BERBELANJA</option>
 						<option value="bersekolah">BERSEKOLAH</option>
+						<option value="pulang_ke_rumah/tempat_tinggal ">
+							PULANG KE RUMAH
+						</option>
+						<option value="lainnya">LAINNYA</option>
 					</select>
 				</div>
 				<div className="dashboard-input-group3">
 					<label>Tujuan Perjalanan</label>
 					<select id="tujuanPerjalanan">
-						<option value="dki">JAKARTA</option>
+						<option value="Jakarta">JAKARTA</option>
 						<option value="kota_bekasi">KOTA BEKASI</option>
 						<option value="kab_bekasi">KAB. BEKASI</option>
 						<option value="kota_tangerang">KOTA TANGERANG</option>
