@@ -27,6 +27,17 @@ db.connect((err) => {
 app.use(bodyParser.json());
 app.use(cors());
 
+const authenticateUser = (req, res, next) => {
+	if (!req.user || req.user.role !== 'admin') {
+		return res.status(403).json({ error: 'Unauthorized' });
+	}
+	next();
+};
+
+app.get('/userlist', authenticateUser, (req, res) => {
+	res.send('This is the userlist page');
+});
+
 app.delete('/api/users/:userId', (req, res) => {
 	const userId = req.params.userId;
 
@@ -91,8 +102,7 @@ app.get('/api/leaderboard', (req, res) => {
 	const sql =
 		'SELECT rd.username, SUM(dp.poin_diperoleh) AS total_points ' +
 		'FROM data_perjalanan dp ' +
-		'JOIN register_data rd ON dp.nama = rd.username ' + // Sesuaikan nama kolom dengan struktur tabel yang benar
-		'WHERE dp.poin_diperoleh > 0 ' +
+		'JOIN register_data rd ON dp.nama = rd.username ' +
 		'GROUP BY rd.username ' +
 		'ORDER BY total_points DESC ' +
 		'LIMIT 10';
@@ -180,8 +190,6 @@ app.post('/api/stop_perjalanan', (req, res) => {
 						if (leaderboardErr) {
 							console.error('Error updating leaderboard:', leaderboardErr);
 						}
-
-						// Respon ke klien
 						res.status(200).json({
 							message: 'Perjalanan berhasil dihentikan.',
 							poin_diperoleh: poinDiperoleh,

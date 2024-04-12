@@ -8,6 +8,7 @@ const LoginForm = () => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [showLoginPopup, setShowLoginPopup] = useState(false);
 	const [showLoginFailedPopup, setShowLoginFailedPopup] = useState(false);
+	const [showWelcomeAdminPopup, setShowWelcomeAdminPopup] = useState(false);
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const [rememberMe, setRememberMe] = useState(false);
@@ -50,23 +51,23 @@ const LoginForm = () => {
 		if (!username || !password) {
 			return alert('Username dan password harus diisi.');
 		}
-
 		try {
 			setIsLoggingIn(true);
+			if (username === 'admin' && password === 'gamifikasi') {
+				setShowWelcomeAdminPopup(true);
+				navigate('/userlist');
+				return;
+			}
 			const response = await axios.post('http://localhost:3001/api/login', {
 				username,
 				password,
 			});
-
 			console.log('Login berhasil');
 			setUserData({
 				username: response.data.username,
 			});
-
 			handleLoginSuccess(response.data);
-
 			setShowLoginPopup(true);
-
 			setTimeout(() => {
 				setShowLoginPopup(false);
 			}, 2000);
@@ -107,7 +108,6 @@ const LoginForm = () => {
 						/>
 					</div>
 				</div>
-
 				<div className="input-group">
 					<label htmlFor="password" className="input-label">
 						Password
@@ -156,6 +156,12 @@ const LoginForm = () => {
 						Register
 					</button>
 				</div>
+
+				{showWelcomeAdminPopup && (
+					<div className="welcomeAdminPopup" id="welcomeAdminPopup">
+						<p>Welcome Admin!</p>
+					</div>
+				)}
 
 				{showLoginPopup && (
 					<div className="success-popup" id="successPopup">

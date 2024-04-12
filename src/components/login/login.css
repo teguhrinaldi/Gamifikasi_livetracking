@@ -189,6 +189,46 @@
 	}
 }
 
+.success-popup,
+.error-popup,
+.welcomeAdminPopup {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: #fff;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	padding: 20px;
+	z-index: 1000;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* CSS for Success Popup */
+.success-popup {
+	color: green;
+}
+
+/* CSS for Error Popup */
+.error-popup {
+	color: red;
+}
+
+/* CSS for Welcome Admin Popup */
+.welcomeAdminPopup {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: #fff;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	padding: 20px;
+	z-index: 1000;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+	color: blue; /* Warna teks untuk popup "Welcome Admin" */
+}
+
 @media (min-width: 768px) and (max-width: 1023px) {
 	.login-box {
 		width: 90%;

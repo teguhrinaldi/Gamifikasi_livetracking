@@ -144,7 +144,18 @@ const UserList = () => {
 			.delete(`http://localhost:3001/api/users/${userId}`)
 			.then((response) => {
 				console.log('Data pengguna berhasil dihapus:', response.data);
-				setUsers(users.filter((user) => user.id !== userId));
+				axios
+					.get('http://localhost:3001/api/users')
+					.then((response) => {
+						console.log(
+							'Data pengguna dari server setelah penghapusan:',
+							response.data
+						);
+						setUsers(response.data);
+					})
+					.catch((error) => {
+						console.error('Error fetching user data after deletion:', error);
+					});
 			})
 			.catch((error) => {
 				console.error('Error menghapus data pengguna:', error);
@@ -156,9 +167,21 @@ const UserList = () => {
 			.delete(`http://localhost:3001/api/perjalanans/${perjalananId}`)
 			.then((response) => {
 				console.log('Data perjalanan berhasil dihapus:', response.data);
-				setPerjalanans(
-					perjalanans.filter((perjalanan) => perjalanan.id !== perjalananId)
-				);
+				axios
+					.get('http://localhost:3001/api/perjalanans')
+					.then((response) => {
+						console.log(
+							'Data perjalanan dari server setelah penghapusan:',
+							response.data
+						);
+						setPerjalanans(response.data);
+					})
+					.catch((error) => {
+						console.error(
+							'Error fetching perjalanan data after deletion:',
+							error
+						);
+					});
 			})
 			.catch((error) => {
 				console.error('Error menghapus data perjalanan:', error);
