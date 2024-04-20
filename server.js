@@ -194,7 +194,6 @@ app.post('/api/stop_perjalanan', (req, res) => {
 
 				const leaderboardSql =
 					'INSERT INTO leaderboard (username, total_points) VALUES (?, ?) ON DUPLICATE KEY UPDATE total_points = total_points + ?';
-
 				db.query(
 					leaderboardSql,
 					[nama, poinDiperoleh, poinDiperoleh],
