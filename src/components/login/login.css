@@ -75,30 +75,13 @@
 
 .button-group {
 	display: flex;
-	flex-direction: row;
+	flex-direction: column;
 	justify-content: center;
-	margin-top: 30px;
 	align-items: center;
-	margin-right: 30px;
-}
-.google-login {
-	margin-top: 15px;
+	margin-top: 30px;
+	margin-right: 15px;
 }
 
-.google-login-button {
-	background-color: rgba(1, 1, 1, 0.1);
-	color: #7c838a;
-	width: 130px;
-	height: 50px;
-	cursor: pointer;
-	border-radius: 10px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	border: 1px solid #7c838a;
-	margin-right: 157px;
-	text-align: left;
-}
 .login-button,
 .register-button {
 	background-color: #5ba4e8;
@@ -107,8 +90,12 @@
 	height: 40px;
 	cursor: pointer;
 	border-radius: 10px;
-	margin-left: 8px;
-	margin-left: auto;
+	margin: 10px auto;
+	text-align: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 14px;
 }
 
 .login-button {
@@ -150,9 +137,9 @@
 .remember-me {
 	display: flex;
 	align-items: center;
-	justify-content: flex-start; /* Pindahkan ke kiri */
+	justify-content: flex-start;
 	margin-bottom: 15px;
-	color: #fff; /* Ubah warna teks sesuai kebutuhan */
+	color: #fff;
 }
 
 .remember-me input[type='checkbox'] {
@@ -164,6 +151,12 @@
 }
 
 @media (max-width: 767px) {
+	.button-group {
+		flex-direction: row;
+		margin-top: 15px;
+		text-align: center;
+	}
+
 	.login-box {
 		width: 80%;
 	}
@@ -180,8 +173,7 @@
 
 	.login-button,
 	.register-button {
-		margin-left: 0;
-		margin-right: 0;
+		margin: 8px 8px 10px 20px;
 	}
 
 	.register-button {

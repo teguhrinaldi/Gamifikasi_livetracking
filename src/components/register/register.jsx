@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './register.css';
-import googleLogo from '../assets/Google.png';
 
 const RegisterForm = ({ onRegisterSuccess }) => {
 	const navigate = useNavigate();
@@ -47,14 +46,6 @@ const RegisterForm = ({ onRegisterSuccess }) => {
 			}, 2000);
 		} catch (error) {
 			console.error('Registrasi gagal:', error.message);
-		}
-	};
-
-	const handleGoogleSignUp = async () => {
-		try {
-			console.log('Google Sign Up');
-		} catch (error) {
-			console.error('Google Sign Up gagal:', error.message);
 		}
 	};
 

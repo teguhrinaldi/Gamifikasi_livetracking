@@ -9,7 +9,7 @@ const app = express();
 const port = 3001;
 
 const db = mysql.createConnection({
-	host: '127.0.0.1',
+	host: 'localhost',
 	user: 'root',
 	password: 'teguhganteng',
 	database: 'data_register',
@@ -150,6 +150,19 @@ app.post('/api/mulai_perjalanan', (req, res) => {
 	);
 });
 
+app.post('/api/resetAutoIncrement', (req, res) => {
+	const query = 'ALTER TABLE data_perjalanan AUTO_INCREMENT = 1';
+	db.query(query, (error, results, fields) => {
+		if (error) {
+			console.error('Error mengatur ulang nilai auto-increment:', error);
+			res.status(500).send('Gagal mengatur ulang nilai auto-increment');
+			return;
+		}
+		console.log('Nilai auto-increment telah diatur ulang');
+		res.status(200).send('Nilai auto-increment telah diatur ulang');
+	});
+});
+
 app.post('/api/stop_perjalanan', (req, res) => {
 	const { nama, koordinat_end } = req.body;
 
@@ -179,7 +192,6 @@ app.post('/api/stop_perjalanan', (req, res) => {
 			if (result.affectedRows > 0) {
 				console.log('Perjalanan berhasil dihentikan');
 
-				// Tambahkan poin ke leaderboard jika belum ada
 				const leaderboardSql =
 					'INSERT INTO leaderboard (username, total_points) VALUES (?, ?) ON DUPLICATE KEY UPDATE total_points = total_points + ?';
 

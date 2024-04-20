@@ -175,6 +175,22 @@ const UserList = () => {
 							response.data
 						);
 						setPerjalanans(response.data);
+
+						// Setel ulang nilai auto-increment untuk kolom id
+						axios
+							.post('http://localhost:3001/api/resetAutoIncrement')
+							.then((response) => {
+								console.log(
+									'Nilai auto-increment telah diatur ulang:',
+									response.data
+								);
+							})
+							.catch((error) => {
+								console.error(
+									'Error mengatur ulang nilai auto-increment:',
+									error
+								);
+							});
 					})
 					.catch((error) => {
 						console.error(
